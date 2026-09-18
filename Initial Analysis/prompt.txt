@@ -1,0 +1,1 @@
+There is an image in this directory named '20260917_175649.jpg' that contains the a path drawn on a sheet of graph paper. I would like a CSV file containing the list of all the all the points where the path intersects the grid. The grid is colored light blue and the path is drwan in gray pencil. There are some gaps in the path.
