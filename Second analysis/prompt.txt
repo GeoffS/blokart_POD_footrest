@@ -1,0 +1,12 @@
+There are two images in this directory. 
+The first is named '20260917_175649.jpg' and contains the original photo of a path drawn on a sheet of graph paper. 
+The second image named '20260917_175649_masked.png' is generated from the first image but with only the path and some nearby portion of the grid remaining.
+The camera was aproximately parallel to the sheet of paper. There are certainly distortions from the missalignment.
+The grid is colored light blue.
+The path is drwan in gray pencil. 
+There are some gaps in the path.
+If you need to use Python, create a VENV first and install any packages you need.
+You may execute any commands that only affect files in this directory and below it. Other commands will need explicit approval.
+The goal: I would like a CSV file containing the list of all the all the points where the path intersects the grid.
+I would suggest identifying the the locations where the path crosses the grid and then only interpolate between the nearest grid squares to minimize the effect of errors correcting for the misalignment of the paper and camera.
+Please ask for clarification if any of the preceeding instructions are unclear.
