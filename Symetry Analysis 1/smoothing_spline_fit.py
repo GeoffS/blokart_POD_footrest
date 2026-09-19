@@ -71,6 +71,58 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
+def make_fit_function(x: np.ndarray, y: np.ndarray):
+    spline = make_smoothing_spline(x, y, lam=1.0)
+
+    def fit_function(x_values):
+        x_array = np.asarray(x_values, dtype=float)
+        return spline(x_array)
+
+    return fit_function
+
+
+def write_sampled_csv(data_file: Path, x_orig: np.ndarray, y_orig: np.ndarray, fit_function) -> Path:
+    sample_start = np.floor(x_orig.min() * 4) / 4.0
+    sample_stop = np.ceil(x_orig.max() * 4) / 4.0
+    sample_x = np.arange(sample_start, sample_stop + 0.25 / 2.0, 0.25)
+    sample_y = fit_function(sample_x)
+
+    output_path = data_file.with_name(f"{data_file.stem}_sampled_spline.csv")
+    with output_path.open("w", newline="", encoding="utf-8") as csv_file:
+        writer = csv.writer(csv_file)
+        writer.writerow(["original_x", "original_y", "sample_x", "sample_y"])
+        max_len = max(len(x_orig), len(sample_x))
+        for i in range(max_len):
+            original_x = x_orig[i] if i < len(x_orig) else ""
+            original_y = y_orig[i] if i < len(y_orig) else ""
+            sample_x_value = sample_x[i] if i < len(sample_x) else ""
+            sample_y_value = sample_y[i] if i < len(sample_y) else ""
+            writer.writerow([original_x, original_y, sample_x_value, sample_y_value])
+
+    return output_path
+
+
+def write_python_function_file(data_file: Path, x_train: np.ndarray, y_train: np.ndarray) -> Path:
+    output_path = data_file.with_name(f"{data_file.stem}_spline_function.py")
+
+    x_list = ", ".join(f"{float(value):.15g}" for value in x_train)
+    y_list = ", ".join(f"{float(value):.15g}" for value in y_train)
+
+    function_source = f'''import numpy as np
+from scipy.interpolate import make_smoothing_spline
+
+
+def smoothing_spline_fit(x_values):
+    x_train = np.array([{x_list}], dtype=float)
+    y_train = np.array([{y_list}], dtype=float)
+    spline = make_smoothing_spline(x_train, y_train, lam=1.0)
+    x_array = np.asarray(x_values, dtype=float)
+    return np.asarray(spline(x_array), dtype=float)
+'''
+    output_path.write_text(function_source, encoding="utf-8")
+    return output_path
+
+
 def main() -> None:
     args = parse_args()
     data_file = args.data_file if args.data_file.is_absolute() else Path.cwd() / args.data_file
@@ -80,9 +132,9 @@ def main() -> None:
     if x.size < 3:
         raise ValueError("Need at least three points to fit a smoothing spline.")
 
-    spline = make_smoothing_spline(x, y, lam=1.0)
+    fit_function = make_fit_function(x, y)
     x_fit = np.linspace(x.min(), x.max(), 1000)
-    y_fit = spline(x_fit)
+    y_fit = fit_function(x_fit)
 
     output_file = data_file.with_name(f"{data_file.stem}_smoothing_spline.png")
     title = f"Smoothing Spline Fit to {data_file.name}"
@@ -99,7 +151,12 @@ def main() -> None:
     plt.savefig(output_file, dpi=200)
     plt.show()
 
+    sampled_csv_path = write_sampled_csv(data_file, x, y, fit_function)
+    python_function_path = write_python_function_file(data_file, x, y)
+
     print(f"Fit complete. Plot saved to: {output_file}")
+    print(f"Sampled data saved to: {sampled_csv_path}")
+    print(f"Python spline function saved to: {python_function_path}")
 
 
 if __name__ == "__main__":
