@@ -1,0 +1,3 @@
+Please create a python program that uses 'scipy.interpolate.make_smoothing_spline' to fit a function to the data in the file 'intersections.csv hand-editied base-removed.csv'.
+When the fit is complete, plot the function with the original points overlayed on the line.
+Create a VENV for the development.
