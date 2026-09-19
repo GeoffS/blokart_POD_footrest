@@ -1,0 +1,15 @@
+There are three images in this directory. 
+The first is named '20260917_175649.jpg' and contains the original photo of a path drawn on a sheet of graph paper.  
+The graph-paper grid contains squares.
+The camera was aproximately parallel to the sheet of paper. There are certainly distortions from the missalignment.
+The second image named '20260917_175649.png' is simply a PNG copy saved with the image-editing program used for the masking described in the next line.
+The third image named '20260917_175649_masked.png' is generated from the second image. Areas away from the path have been erased to a pure-white background. Also, areas of the path that contain extra marks have also been erased.
+The grid-lines are colored light blue on a light-gray background.
+The path is drawn in gray pencil. 
+If you need to use Python, create a VENV first and install any packages you need.
+You may execute any commands that only create, delete, and modify files/directories in this directory 'Third Analysis' and below it. Other commands will need explicit approval.
+The goal: I would like a CSV file containing the list containing the coordinates of all the points where the path intersects the grid.
+There may be intersections that cannot be identified. That is OK as long as at least 90% of the intersections that are not masked are found.
+Use the grid squares as the units (i.e. the edge of each square has lenth 1).
+Each intersection corrdinate will have one value that is an integer (i.e. the index of the grid-line the path is crossing) and the other value should be interpolated from the nearby grid-lines.
+Please ask for clarification if any of the preceeding instructions are unclear.
