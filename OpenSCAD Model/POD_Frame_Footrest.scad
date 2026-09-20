@@ -230,8 +230,8 @@ if(developmentRender)
 {
 	// display() itemModule();
 
-    display() projection() scale(1/mm) core(h=2);
-    // display() translate([-250,0,0]) projection() plate(h=2);
+    display() projection() core(h=2);
+    display() translate([-250,0,0]) projection() plate(h=2);
 }
 else
 {
