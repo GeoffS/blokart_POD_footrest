@@ -236,6 +236,6 @@ if(developmentRender)
 else
 {
     if(makeRendering) itemModule();
-	if(makeDxfCore) projection() scale(1/mm) core(h=2);
-	if(makeDxfPlate) projection() scale(1/mm) plate(h=2);
+	if(makeDxfCore) projection() core(h=2);
+	if(makeDxfPlate) projection() plate(h=2);
 }
