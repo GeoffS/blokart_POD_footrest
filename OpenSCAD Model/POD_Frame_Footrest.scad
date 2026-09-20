@@ -181,7 +181,22 @@ echo(str("len(footrestIndicies[0]) = ", len(footrestIndicies[0])));
 
 module itemModule()
 {
-	linear_extrude(height=0.5*mm) polygon(footrestPoints, footrestIndicies);
+    compositeZ = 3;
+    coreZ = 12; //0.5*mm; 
+    aluminumZ = 3; //0.125*mm
+
+    // Composite face:
+	translate([0,0,-compositeZ]) color("black") linear_extrude(height=compositeZ) polygon(footrestPoints, footrestIndicies);
+
+    // Plywood core:
+	color("tan") linear_extrude(height=coreZ) polygon(footrestPoints, footrestIndicies);
+
+    // Aluminum plate:
+	translate([0,0,coreZ]) color("gray") minkowski() 
+    {
+        linear_extrude(height=aluminumZ-1) polygon(footrestPoints, footrestIndicies);
+        cylinder(d=25, h=1);
+    }
 }
 
 module clip(d=0)
