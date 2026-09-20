@@ -183,6 +183,28 @@ footrestIndicies = [[ for (i = [0 : 1 : n-1]) i ]];
 
 echo(str("len(footrestIndicies[0]) = ", len(footrestIndicies[0])));
 
+makeRendering = false;
+makeDxfCore = false;
+makeDxfPlate = false;
+
+module core(h)
+{
+    linear_extrude(height=h) polygon(footrestPoints, footrestIndicies);
+}
+
+module plate(h)
+{
+    difference()
+    {
+        minkowski() 
+        {
+            linear_extrude(height=h-1) polygon(footrestPoints, footrestIndicies);
+            cylinder(d=25, h=1);
+        }
+        tcu([-200, -400+nothing, -200], 400);
+    }
+}
+
 module itemModule()
 {
     compositeZ = 3;
@@ -190,21 +212,13 @@ module itemModule()
     aluminumZ = 3; //0.125*mm
 
     // Composite face:
-	translate([0,0,-compositeZ]) color("black") linear_extrude(height=compositeZ) polygon(footrestPoints, footrestIndicies);
+	translate([0,0,-compositeZ]) color("black") core(h=compositeZ);
 
     // Plywood core:
-	color("tan") linear_extrude(height=coreZ) polygon(footrestPoints, footrestIndicies);
+	color("tan") core(h=coreZ);
 
     // Aluminum plate:
-	translate([0,0,coreZ]) color("silver") difference()
-    {
-        minkowski() 
-        {
-            linear_extrude(height=aluminumZ-1) polygon(footrestPoints, footrestIndicies);
-            cylinder(d=25, h=1);
-        }
-        tcu([-200, -400+nothing, -200], 400);
-    }
+	translate([0,0,coreZ]) color("silver") plate(h=aluminumZ);
 }
 
 module clip(d=0)
@@ -214,9 +228,14 @@ module clip(d=0)
 
 if(developmentRender)
 {
-	display() itemModule();
+	// display() itemModule();
+
+    display() projection() scale(1/mm) core(h=2);
+    // display() translate([-250,0,0]) projection() plate(h=2);
 }
 else
 {
-	itemModule();
+    if(makeRendering) itemModule();
+	if(makeDxfCore) projection() scale(1/mm) core(h=2);
+	if(makeDxfPlate) projection() scale(1/mm) plate(h=2);
 }
