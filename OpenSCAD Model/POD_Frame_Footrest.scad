@@ -4,22 +4,17 @@ include <../../OpenSCAD_Lib/chamferedCylinders.scad>
 firstLayerHeight = 0.2;
 layerHeight = 0.2;
 
-polygonMinY = 10.06628768;
+polygonMinX = 20.25 + 0.27;
+polygonMinY = 7.5; //10.06628768;
+
+polygonMaxY = 63.14799479;
+
 polygonOffset = [0, polygonMinY];
 gridSize_mm = 5;
 
 footrestPoints = 
 [
-    gridSize_mm*([-20.25, 10.06628768]-polygonOffset), 
-    gridSize_mm*([-20.00, 12.06179004]-polygonOffset), 
-    gridSize_mm*([-19.75, 14.06524636]-polygonOffset), 
-    gridSize_mm*([-19.50, 16.08500057]-polygonOffset), 
-    gridSize_mm*([-19.25, 18.13128348]-polygonOffset), 
-    gridSize_mm*([-19.00, 20.21705481]-polygonOffset), 
-    gridSize_mm*([-18.75, 22.34800266]-polygonOffset), 
-    gridSize_mm*([-18.50, 24.51278823]-polygonOffset), 
-    gridSize_mm*([-18.25, 26.68920769]-polygonOffset), 
-    gridSize_mm*([-18.00, 28.86566826]-polygonOffset), 
+    gridSize_mm*([-polygonMinX, polygonMinY]-polygonOffset),
     gridSize_mm*([-17.75, 31.03502665]-polygonOffset), 
     gridSize_mm*([-17.50, 33.19967738]-polygonOffset), 
     gridSize_mm*([-17.25, 35.3602578]-polygonOffset), 
@@ -163,17 +158,16 @@ footrestPoints =
     gridSize_mm*([17.25, 35.3602578]-polygonOffset), 
     gridSize_mm*([17.50, 33.19967738]-polygonOffset), 
     gridSize_mm*([17.75, 31.03502665]-polygonOffset), 
-    gridSize_mm*([18.00, 28.86566826]-polygonOffset), 
-    gridSize_mm*([18.25, 26.68920769]-polygonOffset), 
-    gridSize_mm*([18.50, 24.51278823]-polygonOffset), 
-    gridSize_mm*([18.75, 22.34800266]-polygonOffset), 
-    gridSize_mm*([19.00, 20.21705481]-polygonOffset), 
-    gridSize_mm*([19.25, 18.13128348]-polygonOffset), 
-    gridSize_mm*([19.50, 16.08500057]-polygonOffset), 
-    gridSize_mm*([19.75, 14.06524636]-polygonOffset), 
-    gridSize_mm*([20.00, 12.06179004]-polygonOffset), 
-    gridSize_mm*([20.25, 10.06628768]-polygonOffset)
+    gridSize_mm*([polygonMinX, polygonMinY]-polygonOffset)
 ];
+
+footrestPointsMinY = min([ for (p = footrestPoints) p[1] ]);
+echo(str("footrestPoints min` Y = ", footrestPointsMinY));
+
+footrestPointsMaxY = max([ for (p = footrestPoints) p[1] ]);
+echo(str("footrestPoints max Y = ", footrestPointsMaxY));
+
+echo(str("Base X = ", 2*footrestPoints[0][0]));
 
 n = len(footrestPoints);
 
@@ -189,7 +183,13 @@ makeDxfPlate = false;
 
 module core(h)
 {
-    linear_extrude(height=h) polygon(footrestPoints, footrestIndicies);
+    difference() 
+    {
+        linear_extrude(height=h) polygon(footrestPoints, footrestIndicies);
+
+        topCutout();
+        bottomCutout();
+    }
 }
 
 module plate(h)
@@ -202,7 +202,25 @@ module plate(h)
             cylinder(d=25, h=1);
         }
         tcu([-200, -400+nothing, -200], 400);
+
+        topCutout();
+        bottomCutout();
     }
+}
+
+topCutoutWidth = 40;
+topCutoutY = 89;
+
+module topCutout()
+{
+
+}
+
+bottomCutoutWidth = 44;
+bottomCutoutY = 80;
+module bottomCutout()
+{
+
 }
 
 module itemModule()
