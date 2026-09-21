@@ -213,14 +213,23 @@ topCutoutY = 89;
 
 module topCutout()
 {
-
+    hull()
+    {
+        tcy([0, footrestPointsMaxY+100, -50], d=topCutoutWidth, h=100);
+        tcy([0, footrestPointsMaxY-topCutoutY+topCutoutWidth/2, -50], d=topCutoutWidth, h=100);
+    }
 }
 
 bottomCutoutWidth = 44;
 bottomCutoutY = 80;
+
 module bottomCutout()
 {
-
+hull()
+    {
+        tcy([0, -100, -50], d=bottomCutoutWidth, h=100);
+        tcy([0, bottomCutoutY-bottomCutoutWidth/2, -50], d=bottomCutoutWidth, h=100);
+    }
 }
 
 module itemModule()
