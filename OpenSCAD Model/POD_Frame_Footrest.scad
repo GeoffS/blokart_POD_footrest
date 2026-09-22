@@ -188,7 +188,6 @@ module core(h)
 {
     difference() 
     {
-        // linear_extrude(height=h) polygon(footrestPoints, footrestIndicies);
         hull()
         {
             r = 78.5;
