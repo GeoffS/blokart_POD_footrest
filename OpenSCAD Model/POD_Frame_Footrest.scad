@@ -199,7 +199,7 @@ module plate(h)
         minkowski() 
         {
             linear_extrude(height=h-1) polygon(footrestPoints, footrestIndicies);
-            cylinder(d=25, h=1);
+            cylinder(d=20, h=1);
         }
         tcu([-200, -400+nothing, -200], 400);
 
@@ -257,8 +257,11 @@ if(developmentRender)
 {
 	// display() itemModule();
 
-    display() projection() core(h=2);
-    display() translate([-250,0,0]) projection() plate(h=2);
+    // display() projection() core(h=2);
+    // display() translate([-250,0,0]) projection() plate(h=2);
+
+    display() translate([0,0,10]) core(h=2);
+    displayGhost() plate(h=2);
 }
 else
 {
