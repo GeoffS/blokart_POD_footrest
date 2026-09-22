@@ -161,6 +161,9 @@ footrestPoints =
     gridSize_mm*([polygonMinX, polygonMinY]-polygonOffset)
 ];
 
+footrestPointsXatY0 = -footrestPoints[0][0];
+echo(str("footrestPointsXatY0 = ", footrestPointsXatY0));
+
 footrestPointsMinY = min([ for (p = footrestPoints) p[1] ]);
 echo(str("footrestPoints min` Y = ", footrestPointsMinY));
 
@@ -182,6 +185,24 @@ makeDxfCore = false;
 makeDxfPlate = false;
 
 module core(h)
+{
+    difference() 
+    {
+        // linear_extrude(height=h) polygon(footrestPoints, footrestIndicies);
+        hull()
+        {
+            r = 78.5;
+            tcy([0,footrestPointsMaxY-r-0.28,0], d=2*r, h=h, $fn=180);
+
+            tcu([-footrestPointsXatY0, 0, 0], [2*footrestPointsXatY0, nothing, h]);
+        }
+
+        topCutout();
+        bottomCutout();
+    }
+}
+
+module coreV1(h)
 {
     difference() 
     {
@@ -260,8 +281,11 @@ if(developmentRender)
     // display() projection() core(h=2);
     // display() translate([-250,0,0]) projection() plate(h=2);
 
-    display() translate([0,0,10]) core(h=2);
-    displayGhost() plate(h=2);
+    // display() translate([0,0,10]) core(h=2);
+    // displayGhost() plate(h=2);
+
+    display() projection() core(h=2);
+    displayGhost() translate([0,0,-10]) coreV1(h=2);
 }
 else
 {
