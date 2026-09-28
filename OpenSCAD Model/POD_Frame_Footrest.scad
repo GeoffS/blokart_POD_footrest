@@ -242,13 +242,14 @@ module topCutout()
 
 bottomCutoutWidth = 44;
 bottomCutoutY = 80;
+bottomCutoutOffsetY = 4;
 
 module bottomCutout()
 {
 hull()
     {
-        tcy([0, -100, -50], d=bottomCutoutWidth, h=100);
-        tcy([0, bottomCutoutY-bottomCutoutWidth/2, -50], d=bottomCutoutWidth, h=100);
+        tcy([bottomCutoutOffsetY, -100, -50], d=bottomCutoutWidth, h=100);
+        tcy([bottomCutoutOffsetY, bottomCutoutY-bottomCutoutWidth/2, -50], d=bottomCutoutWidth, h=100);
     }
 }
 
