@@ -271,18 +271,22 @@ module alignmentCtrMarks()
     alignmentHolesXform() tcy([0, 0, -50], d=2, h=100);
 }
 
-crossXY = 10;
+crossXY = 20;
 
 module alignmentCtrCrosses(h=2)
 {
-    cxy2 = crossXY/2;
-    linear_extrude(height=h) polygon([[0,-cxy2],[0,cxy2]]);
-    linear_extrude(height=h) polygon([[-cxy2,0],[cxy2,0]]);
+    cyx = 0.05;
+
+    alignmentHolesXform() 
+    {
+        cube(center=true, size=[crossXY, cyx, h]);
+        cube(center=true, size=[cyx, crossXY, h]);
+    }
 }
 
 module alignmentHolesXform()
 {
-    for (y = alignmentHolesY)translate([0, y, 0]) children();
+    for (y = alignmentHolesY) translate([0, y, 0]) children();
 }
 
 module removeHolesFrom()
@@ -325,7 +329,7 @@ if(developmentRender)
     display() translate([0,0,10]) removeHolesFrom() core(h=2);
     displayGhost() removeHolesFrom() plate(h=2);
     displayGhost() alignmentCtrMarks();
-    displayGhost() translate([0,0,10]) alignmentCtrCrosses(h=2);
+    displayGhost() translate([0,0,20]) alignmentCtrCrosses(h=2);
 
     // display() projection() core(h=2);
     // displayGhost() translate([0,0,-10]) coreV1(h=2);
