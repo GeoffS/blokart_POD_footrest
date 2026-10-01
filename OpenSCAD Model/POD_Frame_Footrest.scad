@@ -185,6 +185,7 @@ makeDxfCore = false;
 makeDxfPlate = false;
 makeDxfHoles = false;
 makeDxfMarks = false;
+makeDxfCrosses = false;
 
 module core(h)
 {
@@ -270,6 +271,15 @@ module alignmentCtrMarks()
     alignmentHolesXform() tcy([0, 0, -50], d=2, h=100);
 }
 
+crossXY = 10;
+
+module alignmentCtrCrosses(h=2)
+{
+    cxy2 = crossXY/2;
+    linear_extrude(height=h) polygon([[0,-cxy2],[0,cxy2]]);
+    linear_extrude(height=h) polygon([[-cxy2,0],[cxy2,0]]);
+}
+
 module alignmentHolesXform()
 {
     for (y = alignmentHolesY)translate([0, y, 0]) children();
@@ -315,6 +325,7 @@ if(developmentRender)
     display() translate([0,0,10]) removeHolesFrom() core(h=2);
     displayGhost() removeHolesFrom() plate(h=2);
     displayGhost() alignmentCtrMarks();
+    displayGhost() translate([0,0,10]) alignmentCtrCrosses(h=2);
 
     // display() projection() core(h=2);
     // displayGhost() translate([0,0,-10]) coreV1(h=2);
@@ -326,4 +337,5 @@ else
 	if(makeDxfPlate) projection() plate(h=2);
 	if(makeDxfHoles) projection() alignmentHoles();
 	if(makeDxfMarks) projection() alignmentCtrMarks();
+	if(makeDxfCrosses) projection() alignmentCtrCrosses();
 }
