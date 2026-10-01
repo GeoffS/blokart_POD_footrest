@@ -261,10 +261,12 @@ alignmentHolesDia = 0.25 * mm;
 
 module alignmentHoles()
 {
-    for (y = alignmentHolesY)
-    {
-        tcy([0, y, -50], d=alignmentHolesDia, h=100);
-    }
+    alignmentHolesXform() tcy([0, 0, -50], d=alignmentHolesDia, h=100);
+}
+
+module alignmentHolesXform()
+{
+    for (y = alignmentHolesY)translate([0, y, 0]) children();
 }
 
 module removeHolesFrom()
