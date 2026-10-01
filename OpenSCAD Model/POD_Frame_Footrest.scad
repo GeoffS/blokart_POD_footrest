@@ -184,6 +184,7 @@ makeRendering = false;
 makeDxfCore = false;
 makeDxfPlate = false;
 makeDxfHoles = false;
+makeDxfMarks = false;
 
 module core(h)
 {
@@ -264,6 +265,11 @@ module alignmentHoles()
     alignmentHolesXform() tcy([0, 0, -50], d=alignmentHolesDia, h=100);
 }
 
+module alignmentCtrMarks()
+{
+    alignmentHolesXform() tcy([0, 0, -50], d=2, h=100);
+}
+
 module alignmentHolesXform()
 {
     for (y = alignmentHolesY)translate([0, y, 0]) children();
@@ -308,6 +314,7 @@ if(developmentRender)
 
     display() translate([0,0,10]) removeHolesFrom() core(h=2);
     displayGhost() removeHolesFrom() plate(h=2);
+    displayGhost() alignmentCtrMarks();
 
     // display() projection() core(h=2);
     // displayGhost() translate([0,0,-10]) coreV1(h=2);
@@ -317,5 +324,6 @@ else
     if(makeRendering) itemModule();
 	if(makeDxfCore) projection() core(h=2);
 	if(makeDxfPlate) projection() plate(h=2);
-	if(makeDxfHoles) projection() alignmentHoles(d=2);
+	if(makeDxfHoles) projection() alignmentHoles();
+	if(makeDxfMarks) projection() alignmentCtrMarks();
 }
