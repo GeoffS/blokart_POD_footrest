@@ -183,6 +183,7 @@ echo(str("len(footrestIndicies[0]) = ", len(footrestIndicies[0])));
 makeRendering = false;
 makeDxfCore = false;
 makeDxfPlate = false;
+makeDxfHoles = false;
 
 module core(h)
 {
@@ -231,12 +232,14 @@ module plate(h)
 topCutoutWidth = 40;
 topCutoutY = 89;
 
+topCutoutAbsY = footrestPointsMaxY-topCutoutY; //+topCutoutWidth/2;
+
 module topCutout()
 {
     hull()
     {
         tcy([0, footrestPointsMaxY+100, -50], d=topCutoutWidth, h=100);
-        tcy([0, footrestPointsMaxY-topCutoutY+topCutoutWidth/2, -50], d=topCutoutWidth, h=100);
+        tcy([0, topCutoutAbsY+topCutoutWidth/2, -50], d=topCutoutWidth, h=100);
     }
 }
 
@@ -250,6 +253,26 @@ hull()
     {
         tcy([bottomCutoutOffsetY, -100, -50], d=bottomCutoutWidth, h=100);
         tcy([bottomCutoutOffsetY, bottomCutoutY-bottomCutoutWidth/2, -50], d=bottomCutoutWidth, h=100);
+    }
+}
+
+alignmentHolesY = [bottomCutoutY+25, topCutoutAbsY-25];
+alignmentHolesDia = 0.25 * mm;
+
+module alignmentHoles()
+{
+    for (y = alignmentHolesY)
+    {
+        tcy([0, y, -50], d=alignmentHolesDia, h=100);
+    }
+}
+
+module removeHolesFrom()
+{
+    difference()
+    {
+        children();
+        alignmentHoles();
     }
 }
 
@@ -281,15 +304,16 @@ if(developmentRender)
     // display() projection() core(h=2);
     // display() translate([-250,0,0]) projection() plate(h=2);
 
-    // display() translate([0,0,10]) core(h=2);
-    // displayGhost() plate(h=2);
+    display() translate([0,0,10]) removeHolesFrom() core(h=2);
+    displayGhost() removeHolesFrom() plate(h=2);
 
-    display() projection() core(h=2);
-    displayGhost() translate([0,0,-10]) coreV1(h=2);
+    // display() projection() core(h=2);
+    // displayGhost() translate([0,0,-10]) coreV1(h=2);
 }
 else
 {
     if(makeRendering) itemModule();
 	if(makeDxfCore) projection() core(h=2);
 	if(makeDxfPlate) projection() plate(h=2);
+	if(makeDxfHoles) projection() alignmentHoles(d=2);
 }
